@@ -1,8 +1,15 @@
-insert into custom_user(id,email,password,role)
-values(1,'vladimir_fabri98@uns.ac.rs','password1','ADMIN');
+insert into users(email, password, role)
+values('petarpetrovic@gmail.com', 'password', 'OWNER');
 
-insert into custom_user(id,email,password,role)
-values(2,'abc@gmail.com','password2','USER');
+insert into users(email, password, role)
+values('markomarkovic@yahoo.com','password', 'ADMIN');
 
-insert into custom_user(id,email,password,role)
-values(3,'abcd@gmail.com','password3','USER');
+insert into users(email, password, role)
+values('nikolanikolic@gmail.com', 'password', 'USER');
+
+
+insert into users(email, password, role)
+values('jovanjovanovic@yahoo.com', 'password', 'USER');
+
+insert into users(email, password, role)
+values('stefanstefanovic@gmail.com', 'password', 'USER');

@@ -1,6 +1,6 @@
 package authentication.dtos;
 
-public class CustomUserDto {
+public class UserDto {
 
 	private String email;
 	private String password;

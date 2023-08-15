@@ -28,11 +28,11 @@ public class CurrencyExchangeController {
 		String port = environment.getProperty("local.server.port");
 		CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndToIgnoreCase(from, to);
 		
-		if(currencyExchange!=null) {
+		if (currencyExchange != null) {
 			currencyExchange.setEnvironment(port);
 			CurrencyExchange exchange = new CurrencyExchange(currencyExchange.getId(), from, to, currencyExchange.getConversionMultiple(), port);
             return ResponseEntity.ok().body(exchange);
-		}else {
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Requested currency exchange could not be found!");
 		}
 		
