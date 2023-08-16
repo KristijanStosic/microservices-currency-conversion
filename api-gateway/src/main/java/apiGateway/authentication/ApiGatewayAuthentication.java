@@ -1,12 +1,12 @@
 package apiGateway.authentication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
+import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -25,7 +27,6 @@ import authentication.dtos.UserDto;
 @Configuration
 @EnableWebFluxSecurity
 public class ApiGatewayAuthentication {
-
 	
 	/*@Bean
 	public MapReactiveUserDetailsService userDetailsService(BCryptPasswordEncoder encoder) {
@@ -67,9 +68,19 @@ public class ApiGatewayAuthentication {
 	public BCryptPasswordEncoder getEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	 @Bean
+	 public ServerAuthenticationEntryPoint customServerAuthenticationEntryPoint() {
+	    return new CustomServerAuthenticationEntryPoint();
+	}
+	 
+	 @Bean
+	 public ServerAccessDeniedHandler customServerAccessDeniedHandler () {
+		 return new CustomAccessDeniedHandler();
+	 }
 
 	@Bean
-	public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
+	public SecurityWebFilterChain filterChain(ServerHttpSecurity http, ServerAuthenticationEntryPoint authenticationEntryPoint,  CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
 		http.csrf().disable().authorizeExchange()
 				
 				.pathMatchers("/currency-exchange/**").permitAll()
@@ -84,7 +95,19 @@ public class ApiGatewayAuthentication {
 				.pathMatchers("/users/update/{email}").hasAnyRole("ADMIN", "OWNER")
 				.pathMatchers("/users/delete/{email}").hasRole("OWNER")
 				
-				.and().httpBasic().and()
+				.pathMatchers("/bank-account/{email}").hasRole("ADMIN")
+				.pathMatchers("/bank-account/create/{email}").hasRole("ADMIN")
+				.pathMatchers("/bank-account/update/{email}").hasRole("ADMIN")
+				.pathMatchers("/bank-account/update/{oldEmail}/for/{newEmail}").hasRole("ADMIN")
+				.pathMatchers("/bank-account/update/user/{email}/subtract/{quantityS}from/{currS}/add/{quantityA}to/{currA}").permitAll()
+				.pathMatchers("/bank-account/delete/{email}").hasRole("ADMIN")
+				
+				.and()
+				.httpBasic()
+				.authenticationEntryPoint(authenticationEntryPoint)
+				.and()
+				.exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+				.and()
 				//This adds a filter to the filter chain. The filter is defined as a lambda function that takes two parameters: exchange and chain.
 				// The exchange represents the current server exchange, and chain represents the remaining filter chain.
 				.addFilterAfter((exchange, chain) -> {

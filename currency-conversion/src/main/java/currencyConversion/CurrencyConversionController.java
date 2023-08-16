@@ -1,7 +1,6 @@
 package currencyConversion;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,12 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
 import feign.FeignException;
 
 @RestController
@@ -24,17 +19,42 @@ public class CurrencyConversionController {
 	private CurrencyExchangeProxy currencyExchangeProxy;
 	
 	//localhost:8100/currency-conversion?from=EUR&to=RSD&quantity=50
+	//localhost:8765/currency-conversion/from/EUR/to/RSD/quantity/10
+	//@GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
 	@GetMapping("/currency-conversion")
-	public ResponseEntity<?> getConversionFeign(@RequestParam String from, @RequestParam String to, @RequestParam double quantity){
+	public ResponseEntity<CurrencyConversion> getConversion(@RequestParam String from, @RequestParam String to, @RequestParam BigDecimal quantity) throws Exception{
 		
 		try {
-			ResponseEntity<CurrencyConversion> response = currencyExchangeProxy.getExchange(from, to);
-			CurrencyConversion responseBody = response.getBody();
-			return ResponseEntity.ok(new CurrencyConversion(from,to,responseBody.getConversionMultiple(),responseBody.getEnvironment()+" feign",
-				quantity, responseBody.getConversionMultiple().multiply(BigDecimal.valueOf(quantity))));
-		}catch(FeignException e) {
-			return ResponseEntity.status(e.status()).body(e.getMessage());
-		}
+			if (!Utils.isCurrencyValid(from) || !Utils.isCurrencyValid(to)) {
+				throw new ApplicationException(
+		                "requested-query-parameters-from-and-to-are-invalid",
+		                "Query parameters from and to are invalid. Enter them correctly",
+		                HttpStatus.BAD_REQUEST
+					);
+			}
+			
+			if (!Utils.isQuantityValid(quantity)) {
+				throw new ApplicationException(
+		                "requested-query-parameters-quantity-is-invalid",
+		                "Query parameter quantity must be greater than 0",
+		                HttpStatus.BAD_REQUEST
+					);
+			}
+			
+			CurrencyExchangeDto responseCurrencyExchange = currencyExchangeProxy.getExchange(from, to);
+			
+			CurrencyConversion newConversion = new CurrencyConversion(
+					from, 
+					to, 
+					responseCurrencyExchange.getConversionMultiple(),
+					responseCurrencyExchange.getEnvironment(),
+					responseCurrencyExchange.getConversionMultiple().multiply(quantity),
+					quantity);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(newConversion);
+		} catch(FeignException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		} 
 	}
 	
 	/*//localhost:8100/currency-conversion/from/EUR/to/RSD/quantity/100

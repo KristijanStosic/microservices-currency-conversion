@@ -4,13 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.github.resilience4j.ratelimiter.RequestNotPermitted;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
 @RestController
 public class CurrencyExchangeController {
@@ -22,26 +18,29 @@ public class CurrencyExchangeController {
 	private Environment environment;
 
 	@GetMapping("/currency-exchange/from/{from}/to/{to}")
-	//@RateLimiter(name = "default")
-	public ResponseEntity<?> getExchange(@PathVariable String from, @PathVariable String to) {
-		//return new CurrencyExchange(10000, from, to, BigDecimal.valueOf(117),"");
+	public ResponseEntity<CurrencyExchange> getExchange(@PathVariable String from, @PathVariable String to) {
 		String port = environment.getProperty("local.server.port");
-		CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndToIgnoreCase(from, to);
+		CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndToContainingIgnoreCase(from, to);
 		
-		if (currencyExchange != null) {
-			currencyExchange.setEnvironment(port);
-			CurrencyExchange exchange = new CurrencyExchange(currencyExchange.getId(), from, to, currencyExchange.getConversionMultiple(), port);
-            return ResponseEntity.ok().body(exchange);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Requested currency exchange could not be found!");
+		if(!Utils.isCurrencyValid(from) || !Utils.isCurrencyValid(to) || from.equals(to)) {
+			throw new ApplicationException(
+	                "requested-query-parameters-from-and-to-are-invalid",
+	                "Query parameters from and to are invalid. Enter them correctly",
+	                HttpStatus.BAD_REQUEST
+				);
 		}
 		
+		if (currencyExchange == null) {
+			throw new ApplicationException(
+	                "requested-currency-exchange-could-not-be-found",
+	                "Requested currency exchange could not be found!",
+	                HttpStatus.NOT_FOUND
+				);
+			
+		}
+		
+		currencyExchange.setEnvironment(port);
+		CurrencyExchange exchange = new CurrencyExchange(currencyExchange.getId(), from, to, currencyExchange.getConversionMultiple(), port);
+		return ResponseEntity.status(HttpStatus.OK).body(exchange);
 	}
-	
-	/*@ExceptionHandler(RequestNotPermitted.class)
-	public ResponseEntity<String> rateLimiterExceptionHandler(RequestNotPermitted ex){
-		return ResponseEntity.status(503).body("Currency exchange service can only serve up to 2 requests every 30 seconds");
-	}*/
-	
-	//localhost:8000/currency-exchange/from/EUR/to/RSD
 }

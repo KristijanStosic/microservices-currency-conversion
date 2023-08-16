@@ -12,14 +12,14 @@ public class CurrencyConversion {
 
 	// Specificno za CurrencyConversion
 	private BigDecimal conversionTotal;
-	private Double quantity;
+	private BigDecimal quantity;
 
 	public CurrencyConversion() {
 
 	}
 
 	public CurrencyConversion(String from, String to, BigDecimal conversionMultiple, String environment,
-			Double quantity, BigDecimal conversionTotal) {
+			BigDecimal quantity, BigDecimal conversionTotal) {
 		this.from = from;
 		this.to = to;
 		this.conversionMultiple = conversionMultiple;
@@ -68,11 +68,11 @@ public class CurrencyConversion {
 		this.conversionTotal = conversionTotal;
 	}
 
-	public Double getQuantity() {
+	public BigDecimal getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Double quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		this.quantity = quantity;
 	}
 

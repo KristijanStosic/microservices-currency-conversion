@@ -10,16 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableFeignClients
 @SpringBootApplication
-@Configuration
 public class UserApplication {
 	
 	public static void main(String[] args) {
 		
 		SpringApplication.run(UserApplication.class, args);
 	}
-	
-	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-	    return new BCryptPasswordEncoder();
-	}
+
 }
