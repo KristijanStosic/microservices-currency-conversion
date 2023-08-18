@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.core.env.Environment;
@@ -26,6 +27,9 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private BankAccountProxy bankAccountProxy;
 	
 	@Autowired
 	private Environment environment;
@@ -192,22 +196,36 @@ public class UserController {
 		
 		User updatedUser = userRepository.save(existingUser);
 		
+		if (updatedUser.getRole().equals(Role.USER)) {
+			bankAccountProxy.updateBankAccountEmail(email, updatedUser.getEmail());
+		}
+		
 		return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
 	}
 	
 	@DeleteMapping("/users/delete/{email}")
 	public ResponseEntity<String> deleteUser(@PathVariable("email") String email) {
-		User existingUser = userRepository.findByEmail(email); 
+		try {
+
+			User existingUser = userRepository.findByEmail(email); 
 		
-		if (existingUser == null) {
-			throw new ApplicationException(
-	                "user-not-found",
-	                String.format("User with email=%s not found", email),
-	                HttpStatus.NOT_FOUND
-				);
+			if (existingUser == null) {
+				throw new ApplicationException(
+						"user-not-found",
+						String.format("User with email=%s not found", email),
+						HttpStatus.NOT_FOUND
+						);
+			}
+		
+			if (existingUser.getRole().equals(Role.USER)) {
+				bankAccountProxy.deleteBankAccount(email);
+			}
+			
+			userRepository.delete(existingUser);
+			return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
+		
+		} catch (FeignException ex) {
+			throw new ApplicationException("", ex.getMessage(), HttpStatus.BAD_GATEWAY);
 		}
-		
-		userRepository.delete(existingUser);
-		return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
 	}
  }

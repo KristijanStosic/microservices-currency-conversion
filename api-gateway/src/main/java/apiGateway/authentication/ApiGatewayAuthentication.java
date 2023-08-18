@@ -96,10 +96,10 @@ public class ApiGatewayAuthentication {
 				.pathMatchers("/users/delete/{email}").hasRole("OWNER")
 				
 				.pathMatchers("/bank-account/{email}").hasRole("ADMIN")
-				.pathMatchers("/bank-account/create/{email}").hasRole("ADMIN")
+				.pathMatchers("/bank-account/create").hasRole("ADMIN")
 				.pathMatchers("/bank-account/update/{email}").hasRole("ADMIN")
-				.pathMatchers("/bank-account/update/{oldEmail}/for/{newEmail}").hasRole("ADMIN")
-				.pathMatchers("/bank-account/update/user/{email}/subtract/{quantityS}from/{currS}/add/{quantityA}to/{currA}").permitAll()
+				.pathMatchers("/bank-account/update-email/{oldEmail}/for/{newEmail}").hasRole("ADMIN")
+				.pathMatchers("/bank-account/update-balance/from/{from}/to/{to}/quantity/{quantity}/user/{email}").permitAll()
 				.pathMatchers("/bank-account/delete/{email}").hasRole("ADMIN")
 				
 				.and()

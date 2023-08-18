@@ -24,7 +24,6 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         var guid = UUID.randomUUID().toString();
         var response = new ApiErrorResponse(
                 guid,
-                "INTERNAL_SERVER_ERROR",
                 exception.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.name(),
@@ -42,7 +41,6 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         var guid = UUID.randomUUID().toString();
         var response = new ApiErrorResponse(
                 guid,
-                exception.getErrorCode(),
                 exception.getMessage(),
                 exception.getHttpStatus().value(),
                 exception.getHttpStatus().name(),
@@ -52,4 +50,21 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         );
         return new ResponseEntity<>(response, exception.getHttpStatus());
     }
+    
+    /*@ExceptionHandler(ServiceCommunicationException.class)
+    public ResponseEntity<?> handleServiceCommunicationException(
+            ServiceCommunicationException exception, HttpServletRequest request
+    ) {
+        var guid = UUID.randomUUID().toString();
+        var response = new ApiErrorResponse(
+                guid,
+                exception.getMessage(),
+                exception.getHttpStatus().value(),
+                exception.getHttpStatus().name(),
+                request.getRequestURI(),
+                request.getMethod(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, exception.getHttpStatus());
+    }*/
 }

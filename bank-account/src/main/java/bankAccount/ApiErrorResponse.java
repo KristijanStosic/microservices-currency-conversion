@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 public class ApiErrorResponse {
 	
 	private String guid;
-    private String errorCode;
     private String message;
     private Integer statusCode;
     private String statusName;
@@ -21,36 +20,27 @@ public class ApiErrorResponse {
     	this.guid = guid;
     }
     
-    public ApiErrorResponse(String guid, String errorCode) {
+    public ApiErrorResponse(String guid, String message) {
     	this.guid = guid;
-    	this.errorCode = errorCode;
-    }
-    
-    public ApiErrorResponse(String guid, String errorCode, String message) {
-    	this.guid = guid;
-    	this.errorCode = errorCode;
     	this.message = message;
     }
     
-    public ApiErrorResponse(String guid, String errorCode, String message, Integer statusCode) {
+    public ApiErrorResponse(String guid, String message, Integer statusCode) {
     	this.guid = guid;
-    	this.errorCode = errorCode;
     	this.message = message;
     	this.statusCode = statusCode;
     }
     
-    public ApiErrorResponse(String guid, String errorCode, String message, Integer statusCode, String statusName) {
+    public ApiErrorResponse(String guid, String message, Integer statusCode, String statusName) {
     	this.guid = guid;
-    	this.errorCode = errorCode;
     	this.message = message;
     	this.statusCode = statusCode;
     	this.statusName = statusName;
     	
     }
     
-    public ApiErrorResponse(String guid, String errorCode, String message, Integer statusCode, String statusName, String path) {
+    public ApiErrorResponse(String guid, String message, Integer statusCode, String statusName, String path) {
     	this.guid = guid;
-    	this.errorCode = errorCode;
     	this.message = message;
     	this.statusCode = statusCode;
     	this.statusName = statusName;
@@ -58,9 +48,8 @@ public class ApiErrorResponse {
     	
     }
     
-    public ApiErrorResponse(String guid, String errorCode, String message, Integer statusCode, String statusName, String path, String method) {
+    public ApiErrorResponse(String guid, String message, Integer statusCode, String statusName, String path, String method) {
     	this.guid = guid;
-    	this.errorCode = errorCode;
     	this.message = message;
     	this.statusCode = statusCode;
     	this.statusName = statusName;
@@ -68,10 +57,9 @@ public class ApiErrorResponse {
     	this.method = method;	
     }
 
-	public ApiErrorResponse(String guid, String errorCode, String message, Integer statusCode, String statusName,
+	public ApiErrorResponse(String guid, String message, Integer statusCode, String statusName,
 			String path, String method, LocalDateTime timestamp) {
 		this.guid = guid;
-		this.errorCode = errorCode;
 		this.message = message;
 		this.statusCode = statusCode;
 		this.statusName = statusName;
@@ -88,17 +76,6 @@ public class ApiErrorResponse {
 	public void setGuid(String guid) {
 		this.guid = guid;
 	}
-
-
-	public String getErrorCode() {
-		return errorCode;
-	}
-
-
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
-
 
 	public String getMessage() {
 		return message;
