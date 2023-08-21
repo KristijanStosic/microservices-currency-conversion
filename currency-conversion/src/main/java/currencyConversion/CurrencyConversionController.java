@@ -45,7 +45,7 @@ public class CurrencyConversionController {
 					);
 			}
 			
-			CurrencyExchangeDto responseCurrencyExchange = currencyExchangeProxy.getExchange(from, to);
+			//CurrencyExchangeDto responseCurrencyExchange = currencyExchangeProxy.getExchange(from, to);
 			
 			/*CurrencyConversion newConversion = new CurrencyConversion(
 					from, 
@@ -67,6 +67,10 @@ public class CurrencyConversionController {
 		try {
 			
 			CurrencyExchangeDto responseCurrencyExchange = currencyExchangeProxy.getExchange(from, to);
+			
+			if (responseCurrencyExchange == null) {
+				throw new ApplicationException("", "Currency exchange not found", HttpStatus.NOT_FOUND);
+			}
 			
 			CurrencyConversion newConversion = new CurrencyConversion(
 					from, 

@@ -32,6 +32,9 @@ public class UserController {
 	private BankAccountProxy bankAccountProxy;
 	
 	@Autowired
+	private CryptoWalletProxy cryptoWalletProxy;
+	
+	@Autowired
 	private Environment environment;
 	
 	@Autowired
@@ -198,6 +201,7 @@ public class UserController {
 		
 		if (updatedUser.getRole().equals(Role.USER)) {
 			bankAccountProxy.updateBankAccountEmail(email, updatedUser.getEmail());
+			cryptoWalletProxy.updateCryptoWalletEmail(email, updatedUser.getEmail());
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
@@ -219,6 +223,7 @@ public class UserController {
 		
 			if (existingUser.getRole().equals(Role.USER)) {
 				bankAccountProxy.deleteBankAccount(email);
+				cryptoWalletProxy.deleteCryptoWallet(email);
 			}
 			
 			userRepository.delete(existingUser);

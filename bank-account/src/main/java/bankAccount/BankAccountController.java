@@ -65,7 +65,7 @@ public class BankAccountController {
 						HttpStatus.CONFLICT);
 			}
 
-			callOtherService(bankAccount.getEmail());
+			//callOtherService(bankAccount.getEmail());
 
 			bankAccount.setEnvironment(port);
 

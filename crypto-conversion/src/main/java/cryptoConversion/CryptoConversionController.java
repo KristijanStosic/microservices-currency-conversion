@@ -26,7 +26,7 @@ public class CryptoConversionController {
 	//localhost:8765/crypto-conversion/from/EUR/to/RSD/quantity/10
 	//@GetMapping("/crypto-conversion/from/{from}/to/{to}/quantity/{quantity}")
 	@GetMapping("/crypto-conversion")
-	public ResponseEntity<?> getConversion(@RequestParam String from, @RequestParam String to, @RequestParam BigDecimal quantity/*, @RequestParam String email*/) {
+	public ResponseEntity<?> getConversion(@RequestParam String from, @RequestParam String to, @RequestParam BigDecimal quantity, @RequestParam String email) {
 		
 		try {
 			if (!Utils.isCurrencyValid(from) || !Utils.isCurrencyValid(to)) {
@@ -47,7 +47,7 @@ public class CryptoConversionController {
 			
 			CryptoExchangeDto responseCryptoExchange = cryptoExchangeProxy.getExchange(from, to);
 			
-			CryptoConversion newConversion = new CryptoConversion(
+			/*CryptoConversion newConversion = new CryptoConversion(
 					from, 
 					to, 
 					responseCryptoExchange.getConversionMultiple(),
@@ -55,9 +55,9 @@ public class CryptoConversionController {
 					responseCryptoExchange.getConversionMultiple().multiply(quantity),
 					quantity);
 			
-			return ResponseEntity.status(HttpStatus.OK).body(newConversion);
+			return ResponseEntity.status(HttpStatus.OK).body(newConversion);*/
 			
-			//return getResponseEntity(from, to, quantity, email);
+			return getResponseEntity(from, to, quantity, email);
 		} catch(FeignException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		} 
@@ -78,7 +78,7 @@ public class CryptoConversionController {
 			
 			CryptoWalletDto updatedBalance = cryptoWalletProxy.updateCryptoWalletBalance(from, to, quantity, email, newConversion.getConversionTotal());
 			
-			updatedBalance.setMessage("Currency conversion success. " + quantity + " " + from + " for " + to);
+			updatedBalance.setMessage("Crypto conversion success. " + quantity + " " + from + " for " + to);
 			
 			return ResponseEntity.ok().body(updatedBalance);
 		} catch (FeignException ex) {

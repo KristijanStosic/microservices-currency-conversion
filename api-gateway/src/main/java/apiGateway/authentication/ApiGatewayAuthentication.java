@@ -95,12 +95,19 @@ public class ApiGatewayAuthentication {
 				.pathMatchers("/users/update/{email}").hasAnyRole("ADMIN", "OWNER")
 				.pathMatchers("/users/delete/{email}").hasRole("OWNER")
 				
-				.pathMatchers("/bank-account/{email}").hasRole("ADMIN")
 				.pathMatchers("/bank-account/create").hasRole("ADMIN")
+				.pathMatchers("/bank-account/{email}").hasRole("ADMIN")
 				.pathMatchers("/bank-account/update/{email}").hasRole("ADMIN")
 				.pathMatchers("/bank-account/update-email/{oldEmail}/for/{newEmail}").hasRole("ADMIN")
 				.pathMatchers("/bank-account/update-balance/from/{from}/to/{to}/quantity/{quantity}/user/{email}").permitAll()
 				.pathMatchers("/bank-account/delete/{email}").hasRole("ADMIN")
+				
+				.pathMatchers("/crypto-wallet/{email}").hasRole("ADMIN")
+				.pathMatchers("/crypto-wallet/create").hasRole("ADMIN")
+				.pathMatchers("/crypto-wallet/update/{email}").hasRole("ADMIN")
+				.pathMatchers("/crypto-wallet/update-email/{oldEmail}/for/{newEmail}").hasRole("ADMIN")
+				.pathMatchers("/crypto-wallet/update-balance/from/{from}/to/{to}/quantity/{quantity}/user/{email}").permitAll()
+				.pathMatchers("/crypto-wallet/delete/{email}").hasRole("ADMIN")
 				
 				.and()
 				.httpBasic()

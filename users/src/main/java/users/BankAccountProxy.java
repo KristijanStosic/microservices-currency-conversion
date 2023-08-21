@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @FeignClient(name = "bank-account")
 public interface BankAccountProxy {
-	@PutMapping("/bank-account/update/{oldEmail}/for/{newEmail}")
-	public ResponseEntity<BankAccountDto> updateBankAccountEmail(@PathVariable("oldEmail") String oldEmail, @PathVariable("newEmail") String newEmail);
+	@PutMapping("/bank-account/update-email/{oldEmail}/for/{newEmail}")
+	BankAccountDto updateBankAccountEmail(@PathVariable("oldEmail") String oldEmail, @PathVariable("newEmail") String newEmail);
 	
 	@DeleteMapping("/bank-account/delete/{email}")
 	public ResponseEntity<String> deleteBankAccount(@PathVariable String email);
