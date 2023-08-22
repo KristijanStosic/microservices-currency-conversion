@@ -166,6 +166,26 @@ public class BankAccountController {
 		return bankAccountRepository.save(bankAccount);
 	}
 	
+	@PutMapping("/bank-account/update-balance-transfer/user/{email}/quantity/{quantity}/from/{currency}/add-subtract/{add_subtract}")
+    public ResponseEntity<BankAccount> updateBankAccountAfterTransfer(@PathVariable String email, @PathVariable BigDecimal quantity,
+                                                                  @PathVariable String currency, @PathVariable Boolean add_subtract) {
+		
+            BankAccount bankAccount = bankAccountRepository.findByEmail(email);
+
+            if(bankAccount == null) {
+                throw new ApplicationException("There is no bank account for user with email " + email, HttpStatus.NOT_FOUND);
+            }
+
+            if(add_subtract) {
+                Utils.addBalance(currency, quantity, bankAccount);
+            } else {
+                Utils.subtractBalance(currency, quantity, bankAccount);
+            }
+
+            bankAccountRepository.save(bankAccount);
+            return ResponseEntity.status(HttpStatus.OK).body(bankAccount);	
+    }
+	
 	@DeleteMapping("/bank-account/delete/{email}")
 	public ResponseEntity<String> deleteBankAccount(@PathVariable("email") String email) {
 		BankAccount existingBankAccount = bankAccountRepository.findByEmail(email);

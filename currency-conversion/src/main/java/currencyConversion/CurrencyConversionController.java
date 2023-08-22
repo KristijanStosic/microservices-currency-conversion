@@ -12,7 +12,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,9 +37,6 @@ public class CurrencyConversionController {
 	@GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
 	public ResponseEntity<?> getConversion(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity, HttpServletRequest request) {
 		String email = request.getHeader("X-User-Email");
-		
-		System.out.println("DOSAO SAM OVDE");
-		System.out.println("EMAIL" + email);
 		
 		try {
 

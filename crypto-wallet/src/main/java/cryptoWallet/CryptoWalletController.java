@@ -166,6 +166,26 @@ public class CryptoWalletController {
 		return cryptoWalletRepository.save(cryptoWallet);
 	}
 	
+	@PutMapping("/crypto-wallet/update-balance-transfer/user/{email}/quantity/{quantity}/from/{currency}/add-subtract/{add_subtract}")
+    public ResponseEntity<CryptoWallet> updateCryptoWalletAfterTransfer(@PathVariable String email, @PathVariable BigDecimal quantity,
+                                                                  @PathVariable String currency, @PathVariable Boolean add_subtract) {
+		
+            CryptoWallet cryptoWallet = cryptoWalletRepository.findByEmail(email);
+
+            if(cryptoWallet == null){
+                throw new ApplicationException("There is no crypto wallet for user with email " + email, HttpStatus.NOT_FOUND);
+            }
+
+            if(add_subtract) {
+                Utils.addBalance(currency, quantity, cryptoWallet);
+            } else {
+                Utils.subtractBalance(currency, quantity, cryptoWallet);
+            }
+
+            cryptoWalletRepository.save(cryptoWallet);
+            return ResponseEntity.status(HttpStatus.OK).body(cryptoWallet);	
+    }
+	
 	@DeleteMapping("/crypto-wallet/delete/{email}")
 	public ResponseEntity<String> deleteCryptoWallet(@PathVariable("email") String email) {
 		CryptoWallet existingCryptoWallet = cryptoWalletRepository.findByEmail(email);

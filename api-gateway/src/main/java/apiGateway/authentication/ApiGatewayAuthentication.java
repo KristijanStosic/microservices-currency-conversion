@@ -1,6 +1,5 @@
 package apiGateway.authentication;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,7 +108,8 @@ public class ApiGatewayAuthentication {
 				.pathMatchers("/crypto-wallet/update-balance/from/{from}/to/{to}/quantity/{quantity}/user/{email}").permitAll()
 				.pathMatchers("/crypto-wallet/delete/{email}").hasRole("ADMIN")
 				
-				.pathMatchers("/trade-service/from/{from}/to/{to}/quantity/{quantity}").hasRole("USER")
+				.pathMatchers("/trade-service/**").hasRole("USER")
+				.pathMatchers("/transfer-service/**").hasRole("USER")
 				
 				.and()
 				.httpBasic()
