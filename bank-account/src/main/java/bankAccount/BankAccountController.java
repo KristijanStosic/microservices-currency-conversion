@@ -149,6 +149,23 @@ public class BankAccountController {
 		return ResponseEntity.status(HttpStatus.OK).body(bankAccount);
 	}
 	
+	@PutMapping("/bank-account/update-balance-trade/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
+	public BankAccount updateBankAccountAfterTrade(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity, @PathVariable String email) {
+		BankAccount bankAccount = bankAccountRepository.findByEmail(email);
+		
+		if(from.equals("RSD") || from.equals("EUR") || from.equals("USD") || from.equals("CHF") || from.equals("GBP")) {
+			if(Utils.checkBankAccountBalance(from, quantity, bankAccount)) {
+				Utils.subtractBalance(from, quantity, bankAccount);
+			}
+		}
+		
+		if(to.equals("RSD") || to.equals("EUR") || to.equals("USD") || to.equals("CHF") || to.equals("GBP")) {
+			Utils.addBalance(to, quantity, bankAccount);
+		}
+		
+		return bankAccountRepository.save(bankAccount);
+	}
+	
 	@DeleteMapping("/bank-account/delete/{email}")
 	public ResponseEntity<String> deleteBankAccount(@PathVariable("email") String email) {
 		BankAccount existingBankAccount = bankAccountRepository.findByEmail(email);

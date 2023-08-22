@@ -148,6 +148,24 @@ public class CryptoWalletController {
 		return ResponseEntity.status(HttpStatus.OK).body(cryptoWallet);
 	}
 	
+	@PutMapping("/crypto-wallet/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
+	public CryptoWallet updateCryptoWalletAfterTrade(@PathVariable String from, @PathVariable String to,
+			@PathVariable BigDecimal quantity, @PathVariable String email) {
+		CryptoWallet cryptoWallet = cryptoWalletRepository.findByEmail(email);
+		
+		if (from.equals("BTC") || from.equals("ETH") || from.equals("XRP")) {
+			if (Utils.checkBankAccountBalance(from, quantity, cryptoWallet)) {
+				Utils.subtractBalance(from, quantity, cryptoWallet);
+			}
+		}
+
+		if (to.equals("BTC") || to.equals("ETH") || to.equals("XRP")) {
+			Utils.addBalance(to, quantity, cryptoWallet);
+		}
+
+		return cryptoWalletRepository.save(cryptoWallet);
+	}
+	
 	@DeleteMapping("/crypto-wallet/delete/{email}")
 	public ResponseEntity<String> deleteCryptoWallet(@PathVariable("email") String email) {
 		CryptoWallet existingCryptoWallet = cryptoWalletRepository.findByEmail(email);

@@ -109,6 +109,8 @@ public class ApiGatewayAuthentication {
 				.pathMatchers("/crypto-wallet/update-balance/from/{from}/to/{to}/quantity/{quantity}/user/{email}").permitAll()
 				.pathMatchers("/crypto-wallet/delete/{email}").hasRole("ADMIN")
 				
+				.pathMatchers("/trade-service/from/{from}/to/{to}/quantity/{quantity}").hasRole("USER")
+				
 				.and()
 				.httpBasic()
 				.authenticationEntryPoint(authenticationEntryPoint)

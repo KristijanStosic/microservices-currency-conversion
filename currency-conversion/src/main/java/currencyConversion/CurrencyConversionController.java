@@ -5,13 +5,17 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import feign.FeignException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class CurrencyConversionController {
@@ -22,13 +26,24 @@ public class CurrencyConversionController {
 	@Autowired
 	private BankAccountProxy bankAccountProxy;
 	
+	SecurityContext securityContext = SecurityContextHolder.getContext();
+
+	// Get the Auth object
+	Authentication authentication = securityContext.getAuthentication();
+	
 	//localhost:8100/currency-conversion?from=EUR&to=RSD&quantity=50
 	//localhost:8765/currency-conversion/from/EUR/to/RSD/quantity/10
-	//@GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
-	@GetMapping("/currency-conversion")
-	public ResponseEntity<?> getConversion(@RequestParam String from, @RequestParam String to, @RequestParam BigDecimal quantity, @RequestParam String email) {
+	//@GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
+	//@GetMapping("/currency-conversion")
+	@GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
+	public ResponseEntity<?> getConversion(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity, HttpServletRequest request) {
+		String email = request.getHeader("X-User-Email");
+		
+		System.out.println("DOSAO SAM OVDE");
+		System.out.println("EMAIL" + email);
 		
 		try {
+
 			if (!Utils.isCurrencyValid(from) || !Utils.isCurrencyValid(to)) {
 				throw new ApplicationException(
 		                "requested-query-parameters-from-and-to-are-invalid",

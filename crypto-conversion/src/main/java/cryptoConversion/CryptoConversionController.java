@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import feign.FeignException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class CryptoConversionController {
@@ -24,9 +25,11 @@ public class CryptoConversionController {
 	
 	//localhost:8100/crypto-conversion?from=EUR&to=RSD&quantity=50
 	//localhost:8765/crypto-conversion/from/EUR/to/RSD/quantity/10
-	//@GetMapping("/crypto-conversion/from/{from}/to/{to}/quantity/{quantity}")
-	@GetMapping("/crypto-conversion")
-	public ResponseEntity<?> getConversion(@RequestParam String from, @RequestParam String to, @RequestParam BigDecimal quantity, @RequestParam String email) {
+	//@GetMapping("/crypto-conversion/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
+	//@GetMapping("/crypto-conversion")
+	@GetMapping("/crypto-conversion/from/{from}/to/{to}/quantity/{quantity}")
+	public ResponseEntity<?> getConversion(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity/*, @PathVariable String email*/, HttpServletRequest request) {
+		String email = request.getHeader("X-User-Email");
 		
 		try {
 			if (!Utils.isCurrencyValid(from) || !Utils.isCurrencyValid(to)) {
