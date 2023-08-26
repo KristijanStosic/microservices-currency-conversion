@@ -216,7 +216,7 @@ public class CryptoWalletController {
 			
 			if (responseBankAccount == null) {
 				throw new ApplicationException(
-						"There is no bank account with this email!", 
+						"There is no crypto WALLET with this email!", 
 						HttpStatus.BAD_REQUEST);
 			}
 

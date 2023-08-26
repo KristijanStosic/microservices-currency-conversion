@@ -65,7 +65,7 @@ public class BankAccountController {
 						HttpStatus.CONFLICT);
 			}
 
-			//callOtherService(bankAccount.getEmail());
+			callOtherService(bankAccount.getEmail());
 
 			bankAccount.setEnvironment(port);
 
@@ -204,6 +204,7 @@ public class BankAccountController {
 	public ResponseEntity<UserDto> callOtherService(String email) {
 		try {
 			UserDto responseUser = userProxy.getUserByEmail(email);		
+			
 
 			if (!responseUser.getRole().equals(Role.USER)) {
 				throw new ApplicationException(
