@@ -82,8 +82,6 @@ public class CryptoWalletController {
 			
 			CryptoWallet existingCryptoWallet = cryptoWalletRepository.findByEmail(email);
 			
-			
-			
 			if(existingCryptoWallet == null) {
 				throw new ApplicationException(
 						String.format("Crypto wallet with email=%s is not found", email), 
@@ -148,7 +146,7 @@ public class CryptoWalletController {
 		return ResponseEntity.status(HttpStatus.OK).body(cryptoWallet);
 	}
 	
-	@PutMapping("/crypto-wallet/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
+	@PutMapping("/crypto-wallet/update-balance-trade/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
 	public CryptoWallet updateCryptoWalletAfterTrade(@PathVariable String from, @PathVariable String to,
 			@PathVariable BigDecimal quantity, @PathVariable String email) {
 		CryptoWallet cryptoWallet = cryptoWalletRepository.findByEmail(email);

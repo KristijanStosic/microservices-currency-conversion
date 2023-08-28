@@ -13,9 +13,9 @@ public interface CryptoWalletProxy {
 	@GetMapping("/crypto-wallet/{email}")
 	CryptoWalletDto getCryptoWallet(@PathVariable String email); 
 	
-	@PutMapping("/crypto-wallet/from/{from}/to/{to}/quantity/{quantity}/user/{email}/totalConvertedAmount/{totalConvertedAmount}")
+	@PutMapping("/crypto-wallet/update-balance/from/{from}/to/{to}/quantity/{quantity}/user/{email}/totalConvertedAmount/{totalConvertedAmount}")
 	CryptoWalletDto updateCryptoWalletBalance(@PathVariable String from, @PathVariable String to, BigDecimal quantity, @PathVariable String email, @PathVariable BigDecimal totalConvertedAmount);
 	
-	@PutMapping("/crypto-wallet/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
+	@PutMapping("/crypto-wallet/update-balance-trade/from/{from}/to/{to}/quantity/{quantity}/user/{email}")
 	CryptoWalletDto updateCryptoWalletAfterTrade(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity, @PathVariable String email);
 }

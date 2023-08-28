@@ -24,8 +24,8 @@ public class TransferServiceController {
 
 
     @GetMapping("/transfer-service/currency/{currency}/amount/{amount}/to/user/{email}")
-    @CircuitBreaker(name = "transferService", fallbackMethod = "getFallback")
-    @RateLimiter(name = "transferService", fallbackMethod = "getFallbackResponse")
+    //@CircuitBreaker(name = "transferService", fallbackMethod = "getFallback")
+   //@RateLimiter(name = "transferService", fallbackMethod = "getFallbackResponse")
     public ResponseEntity<?> getTransfer(@PathVariable String currency, @PathVariable BigDecimal amount, @PathVariable String email, HttpServletRequest request) {
             String moneySender = request.getHeader("X-User-Email");
 

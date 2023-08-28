@@ -31,11 +31,6 @@ public class BankAccountController {
 	@Autowired
 	private UserProxy userProxy;
 
-	SecurityContext securityContext = SecurityContextHolder.getContext();
-
-	// Get the Auth object
-	Authentication authentication = securityContext.getAuthentication();
-
 	@GetMapping("/bank-account/{email}")
 	public ResponseEntity<BankAccount> getBankAccount(@PathVariable("email") String email) {
 		String port = environment.getProperty("local.server.port");
