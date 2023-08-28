@@ -130,12 +130,12 @@ public class TradeServiceController {
 					
 					bankAccount = bankAccountProxy.updateBankAccountAfterTrade(from, "USD", quantity.multiply(trade.getConversionMultiple()), email);
 					
-					currencyConversionProxy.getCurrencyConversion("USD", "RSD", quantity, email);
-					
 					newAmount = bankAccountProxy.getBankAccount(email).getUsd_amount();
 					
-					difference = newAmount.subtract(oldAmount);		
+					difference = newAmount.subtract(oldAmount);	
 					
+					//currencyConversionProxy.getCurrencyConversion("USD", to, difference, email);
+							
 					currencyExchange = currencyExchangeProxy.getExchange("USD", to);
 					
 					cryptoWalletProxy.updateCryptoWalletAfterTrade(from, to, quantity, email);
