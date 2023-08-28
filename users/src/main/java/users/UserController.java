@@ -84,10 +84,6 @@ public class UserController {
 			
 			User owner = userRepository.findByRole(Role.OWNER);
 			
-			if (role != null) {
-				
-			}
-			
 			if (user.getEmail().equals("") || user.getPassword().equals("") || user.getEmail() == null || user.getPassword() == null || user.getRole() == null) {
 				throw new ApplicationException(
 		                "insert-all-values",
