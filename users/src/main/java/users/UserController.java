@@ -162,6 +162,14 @@ public class UserController {
 				);
 		}
 		
+		if (existingUser.getRole().equals(Role.OWNER)) {
+			throw new ApplicationException(
+	                "owner-already-exists-in-the-database",
+	                "There is already a user with role OWNER in the database",
+	                HttpStatus.CONFLICT
+				);
+		}
+		
 		if (checkNewEmail != null) {
 			throw new ApplicationException(
 	                "user-with-this-email-already-exists",
