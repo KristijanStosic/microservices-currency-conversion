@@ -40,11 +40,6 @@ public class UserController {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
-	SecurityContext securityContext = SecurityContextHolder.getContext();
-	
-	// Get the Auth object
-	Authentication authentication = securityContext.getAuthentication();
-	
 	@GetMapping("/users/all")
 	public ResponseEntity<List<User>> getAllUsers() {
 		List<User> users = userRepository.findAll();
@@ -88,6 +83,10 @@ public class UserController {
 			User existingUser = userRepository.findByEmail(user.getEmail());
 			
 			User owner = userRepository.findByRole(Role.OWNER);
+			
+			if (role != null) {
+				
+			}
 			
 			if (user.getEmail().equals("") || user.getPassword().equals("") || user.getEmail() == null || user.getPassword() == null || user.getRole() == null) {
 				throw new ApplicationException(

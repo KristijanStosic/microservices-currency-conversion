@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -20,7 +22,10 @@ public class TransferServiceController {
     @Autowired
     private CryptoWalletProxy cryptoWalletProxy;
 
+
     @GetMapping("/transfer-service/currency/{currency}/amount/{amount}/to/user/{email}")
+    @CircuitBreaker(name = "transferService", fallbackMethod = "getFallback")
+    @RateLimiter(name = "transferService", fallbackMethod = "getFallbackResponse")
     public ResponseEntity<?> getTransfer(@PathVariable String currency, @PathVariable BigDecimal amount, @PathVariable String email, HttpServletRequest request) {
             String moneySender = request.getHeader("X-User-Email");
 
@@ -80,5 +85,13 @@ public class TransferServiceController {
                 }
             }
             return null;
+    }
+    
+    public String getFallback(Exception e) {
+    	return "Service unavailable !";
+    }
+    
+    public String getFallbackResponse(Exception e) {
+    	return "You can only send 2 requests within 30 seconds!";
     }
 }

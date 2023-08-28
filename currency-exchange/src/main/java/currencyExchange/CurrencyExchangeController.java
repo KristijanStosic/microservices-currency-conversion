@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+
 @RestController
 public class CurrencyExchangeController {
 	
@@ -18,6 +20,7 @@ public class CurrencyExchangeController {
 	private Environment environment;
 
 	@GetMapping("/currency-exchange/from/{from}/to/{to}")
+	@RateLimiter(name = "currencyExchange", fallbackMethod = "getFallbackResponse")
 	public ResponseEntity<CurrencyExchange> getExchange(@PathVariable String from, @PathVariable String to) {
 		String port = environment.getProperty("local.server.port");
 		CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndToContainingIgnoreCase(from, to);
@@ -43,4 +46,8 @@ public class CurrencyExchangeController {
 		CurrencyExchange exchange = new CurrencyExchange(currencyExchange.getId(), from, to, currencyExchange.getConversionMultiple(), port);
 		return ResponseEntity.status(HttpStatus.OK).body(exchange);
 	}
+	
+    public String getFallbackResponse(Exception e) {
+    	return "You can only send 2 requests within 30 seconds!";
+    }
 }

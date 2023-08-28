@@ -32,11 +32,6 @@ public class TradeServiceController {
 	@Autowired
 	private CurrencyExchangeProxy currencyExchangeProxy;
 	
-	SecurityContext securityContext = SecurityContextHolder.getContext();
-
-	// Get the Auth object
-	Authentication authentication = securityContext.getAuthentication();
-	
 	@GetMapping("/trade-service/from/{from}/to/{to}/quantity/{quantity}")
 	public ResponseEntity<?> getTrade(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity, HttpServletRequest request) {
 		String role = request.getHeader("X-User-Role");
